@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detektif Pola: Mengungkap Misteri Benda Ajaib</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'detective-blue': '#1e3a8a',
+                        'mustard': '#d97706',
+                        'light-gray': '#f3f4f6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .detective-shadow {
+            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.2);
+        }
+        
+        .magnify-hover:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(217, 119, 6, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(217, 119, 6, 0.6); }
+        }
+        
+        .drag-item {
+            cursor: grab;
+            transition: all 0.3s ease;
+        }
+        
+        .drag-item:active {
+            cursor: grabbing;
+            transform: rotate(5deg) scale(1.1);
+        }
+        
+        .drop-zone {
+            border: 3px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: #d97706;
+            background-color: rgba(217, 119, 6, 0.1);
+        }
+        
+        .evidence-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-detective-blue via-slate-800 to-detective-blue font-sans">
+    <header class="bg-detective-blue/90 backdrop-blur-sm border-b-4 border-mustard shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-mustard p-3 rounded-full pulse-glow">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">Detektif Pola</h1>
+                        <p class="text-mustard text-sm">Mengungkap Misteri Benda Ajaib</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="main-activity-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors magnify-hover flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/>
+                        </svg>
+                        <span>Kegiatan Inti 🔒</span>
+                    </button>
+                    <button id="assessment-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors magnify-hover flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        <span>Asesmen</span>
+                    </button>
+                    <div class="bg-white/10 px-4 py-2 rounded-lg">
+                        <span class="text-white text-sm">Kelas 7 SMP</span>
+                    </div>
+                    <div class="bg-mustard px-4 py-2 rounded-lg">
+                        <span class="text-white font-semibold" id="score">Skor: 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 h-full">
+        <!-- Home Page -->
+        <div id="home-page">
+            <!-- Mission Briefing -->
+            <section class="mb-8">
+                <div class="bg-white/95 backdrop-blur-sm rounded-xl p-6 detective-shadow border-l-4 border-mustard">
+                    <div class="flex items-start space-x-4">
+                        <div class="bg-detective-blue p-3 rounded-full">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-detective-blue mb-2">📋 Misi Rahasia</h2>
+                            <p class="text-gray-700 leading-relaxed">
+                                Selamat datang, Detektif Junior! Sebuah koleksi benda ajaib telah ditemukan, namun mereka tersebar acak. 
+                                Tugasmu adalah mengidentifikasi pola tersembunyi dan mengelompokkan benda-benda ini berdasarkan karakteristik yang sama. 
+                                Gunakan kemampuan observasimu untuk memecahkan misteri ini!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Main Activity Page -->
+        <div id="main-activity-page" class="hidden">
+            <!-- Back Button -->
+            <div class="mb-6">
+                <button id="back-to-home" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"/>
+                    </svg>
+                    <span>Kembali</span>
+                </button>
+            </div>
+
+            <!-- Team Investigation Header -->
+            <section class="mb-8">
+                <div class="bg-gradient-to-r from-detective-blue to-slate-700 rounded-xl p-6 detective-shadow text-white">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-mustard p-3 rounded-full mr-4 pulse-glow">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold">Tim Detektif Pola</h1>
+                            <p class="text-mustard text-lg">Investigasi Kolaboratif - Kegiatan Inti</p>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <h3 class="text-xl font-semibold mb-2">🔬 Misi Investigasi Tim</h3>
+                        <p class="text-gray-100 leading-relaxed">
+                            Kalian adalah ilmuwan yang menemukan benda-benda misterius ini. Tugas kalian adalah mengidentifikasi kesamaan dan perbedaannya. 
+                            <strong>Buatlah minimal 3 sistem pengelompokan (klasifikasi) yang berbeda</strong> untuk semua benda tersebut. 
+                            Beri nama untuk setiap kelompok dan diskusikan dengan tim!
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Investigation Objects -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <svg class="w-8 h-8 text-mustard mr-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,16.5L18,9.5L16.59,8.09L11,13.67L7.91,10.59L6.5,12L11,16.5Z"/>
+                    </svg>
+                    Benda-benda Investigasi
+                </h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">🪙</div>
+                        <h4 class="font-semibold text-detective-blue">Koin</h4>
+                        <p class="text-xs text-gray-600">Logam, Bulat</p>
+                    </div>
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">🥄</div>
+                        <h4 class="font-semibold text-detective-blue">Sendok</h4>
+                        <p class="text-xs text-gray-600">Logam, Panjang</p>
+                    </div>
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">🔑</div>
+                        <h4 class="font-semibold text-detective-blue">Kunci</h4>
+                        <p class="text-xs text-gray-600">Logam, Kecil</p>
+                    </div>
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">🍃</div>
+                        <h4 class="font-semibold text-detective-blue">Daun</h4>
+                        <p class="text-xs text-gray-600">Organik, Hijau</p>
+                    </div>
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">🍎</div>
+                        <h4 class="font-semibold text-detective-blue">Apel</h4>
+                        <p class="text-xs text-gray-600">Organik, Merah</p>
+                    </div>
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">📖</div>
+                        <h4 class="font-semibold text-detective-blue">Buku</h4>
+                        <p class="text-xs text-gray-600">Kertas, Persegi</p>
+                    </div>
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">🍼</div>
+                        <h4 class="font-semibold text-detective-blue">Botol</h4>
+                        <p class="text-xs text-gray-600">Plastik, Silinder</p>
+                    </div>
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">📱</div>
+                        <h4 class="font-semibold text-detective-blue">Smartphone</h4>
+                        <p class="text-xs text-gray-600">Elektronik, Persegi</p>
+                    </div>
+                    <div class="evidence-card rounded-xl p-4 text-center detective-shadow">
+                        <div class="text-4xl mb-2">🪨</div>
+                        <h4 class="font-semibold text-detective-blue">Batu</h4>
+                        <p class="text-xs text-gray-600">Mineral, Keras</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Classification Workspace -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <svg class="w-8 h-8 text-mustard mr-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,5V19H5V5H19Z"/>
+                    </svg>
+                    Ruang Kerja Klasifikasi Tim
+                </h2>
+
+                <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Classification 1 -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-6 detective-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 p-2 rounded-full mr-3">
+                                <span class="text-white font-bold">1</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-detective-blue">Klasifikasi Pertama</h3>
+                        </div>
+                        <div class="mb-4">
+                            <label for="classification1-name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Sistem Klasifikasi:</label>
+                            <input type="text" id="classification1-name" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-mustard focus:outline-none">
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="group1-1" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 1:</label>
+                                <input type="text" id="group1-1" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items1-1" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label for="group1-2" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 2:</label>
+                                <input type="text" id="group1-2" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items1-2" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label for="group1-3" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 3:</label>
+                                <input type="text" id="group1-3" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items1-3" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Classification 2 -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-6 detective-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-600 p-2 rounded-full mr-3">
+                                <span class="text-white font-bold">2</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-detective-blue">Klasifikasi Kedua</h3>
+                        </div>
+                        <div class="mb-4">
+                            <label for="classification2-name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Sistem Klasifikasi:</label>
+                            <input type="text" id="classification2-name" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-mustard focus:outline-none">
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="group2-1" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 1:</label>
+                                <input type="text" id="group2-1" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items2-1" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label for="group2-2" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 2:</label>
+                                <input type="text" id="group2-2" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items2-2" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label for="group2-3" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 3:</label>
+                                <input type="text" id="group2-3" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items2-3" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Classification 3 -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-6 detective-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-600 p-2 rounded-full mr-3">
+                                <span class="text-white font-bold">3</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-detective-blue">Klasifikasi Ketiga</h3>
+                        </div>
+                        <div class="mb-4">
+                            <label for="classification3-name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Sistem Klasifikasi:</label>
+                            <input type="text" id="classification3-name" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-mustard focus:outline-none">
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="group3-1" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 1:</label>
+                                <input type="text" id="group3-1" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items3-1" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label for="group3-2" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 2:</label>
+                                <input type="text" id="group3-2" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items3-2" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label for="group3-3" class="block text-sm font-medium text-gray-600 mb-1">Kelompok 3:</label>
+                                <input type="text" id="group3-3" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none mb-1">
+                                <textarea id="items3-3" class="w-full p-2 border border-gray-300 rounded focus:border-mustard focus:outline-none text-sm" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 text-center space-x-4">
+                    <button id="save-classifications" class="bg-mustard hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors magnify-hover">
+                        💾 Simpan Klasifikasi Tim
+                    </button>
+
+                    <button id="clear-all" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        🗑️ Bersihkan Semua
+                    </button>
+                </div>
+
+                <div id="save-result" class="mt-4 text-center font-semibold"></div>
+            </section>
+
+
+        </div>
+
+        <!-- Password Modal -->
+        <div id="password-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-white rounded-xl p-8 max-w-md mx-4">
+                <div class="text-center mb-6">
+                    <div class="bg-green-600 p-4 rounded-full mx-auto w-16 h-16 flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-detective-blue mb-2">🔐 Akses Kegiatan Inti</h3>
+                    <p class="text-gray-600">Masukkan password untuk mengakses kegiatan inti</p>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="password-input" class="block text-sm font-semibold text-gray-700 mb-2">Password:</label>
+                    <input type="password" id="password-input" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-600 focus:outline-none text-center text-lg" maxlength="12">
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button id="password-submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        🔓 Buka Akses
+                    </button>
+                    <button id="password-cancel" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        ❌ Batal
+                    </button>
+                </div>
+                
+                <div id="password-error" class="mt-4 text-center text-red-600 font-semibold hidden">
+                    ❌ Password salah! Silakan coba lagi.
+                </div>
+            </div>
+        </div>
+
+        <!-- Pattern Challenges -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <svg class="w-8 h-8 text-mustard mr-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/>
+                </svg>
+                Tantangan Detektif
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Challenge 1 -->
+                <div class="evidence-card rounded-xl p-6 detective-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-mustard p-2 rounded-full mr-3">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-detective-blue">Pola Angka Misterius</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Temukan pola dalam urutan angka berikut:</p>
+                    <div class="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 mb-4">
+                        <div class="text-center text-xl font-mono text-detective-blue">
+                            2, 4, 8, 16, ?, 64
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="pattern-answer bg-gray-200 hover:bg-mustard hover:text-white px-4 py-2 rounded-lg transition-colors" data-answer="24">24</button>
+                        <button class="pattern-answer bg-gray-200 hover:bg-mustard hover:text-white px-4 py-2 rounded-lg transition-colors" data-answer="32">32</button>
+                        <button class="pattern-answer bg-gray-200 hover:bg-mustard hover:text-white px-4 py-2 rounded-lg transition-colors" data-answer="30">30</button>
+                    </div>
+                    <div class="mt-3 text-sm text-gray-500" id="challenge1-result"></div>
+                </div>
+
+                <!-- Challenge 2 -->
+                <div class="evidence-card rounded-xl p-6 detective-shadow">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-mustard p-2 rounded-full mr-3">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M21,9V7L15,1L13.5,2.5L16.17,5.17L10.58,10.76C10.22,10.54 9.81,10.4 9.37,10.4C7.95,10.4 6.8,11.5 6.8,12.9C6.8,14.3 7.95,15.4 9.37,15.4C10.78,15.4 11.93,14.3 11.93,12.9C11.93,12.46 11.79,12.05 11.57,11.69L17.16,6.1L19.83,8.77L21,7.5V9H21M15,9H17V11H15V9M13,13H15V15H13V13M17,11H19V13H17V11M15,15H17V17H15V15Z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-detective-blue">Pola Bentuk Geometri</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Bentuk mana yang melanjutkan pola?</p>
+                    <div class="bg-white p-4 rounded-lg border-2 border-dashed border-gray-300 mb-4">
+                        <div class="flex justify-center items-center space-x-4 text-3xl">
+                            <span class="text-red-500">●</span>
+                            <span class="text-blue-500">■</span>
+                            <span class="text-red-500">●</span>
+                            <span class="text-blue-500">■</span>
+                            <span class="text-gray-400">?</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-center space-x-4">
+                        <button class="shape-answer bg-gray-200 hover:bg-mustard hover:text-white px-4 py-2 rounded-lg transition-colors text-2xl" data-answer="circle">
+                            <span class="text-red-500">●</span>
+                        </button>
+                        <button class="shape-answer bg-gray-200 hover:bg-mustard hover:text-white px-4 py-2 rounded-lg transition-colors text-2xl" data-answer="square">
+                            <span class="text-blue-500">■</span>
+                        </button>
+                        <button class="shape-answer bg-gray-200 hover:bg-mustard hover:text-white px-4 py-2 rounded-lg transition-colors text-2xl" data-answer="triangle">
+                            <span class="text-green-500">▲</span>
+                        </button>
+                    </div>
+                    <div class="mt-3 text-sm text-gray-500" id="challenge2-result"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Drag and Drop Classification Game -->
+        <section>
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <svg class="w-8 h-8 text-mustard mr-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,5V19H5V5H19Z"/>
+                </svg>
+                Permainan Klasifikasi: Seret & Lepas
+            </h2>
+            
+            <div class="bg-white/95 backdrop-blur-sm rounded-xl p-6 detective-shadow">
+                <p class="text-gray-700 mb-6">Kelompokkan benda-benda ajaib berikut berdasarkan polanya. Seret setiap item ke kategori yang tepat!</p>
+                
+                <!-- Items to Drag -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-detective-blue mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                        </svg>
+                        Benda-benda Misterius
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="items-container">
+                        <!-- Items will be generated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Drop Zones -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="drop-zone rounded-xl p-6 min-h-32 text-center" data-category="shapes">
+                        <div class="flex items-center justify-center mb-3">
+                            <div class="bg-detective-blue p-2 rounded-full mr-2">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12,2L13.09,8.26L22,9L13.09,9.74L12,16L10.91,9.74L2,9L10.91,8.26L12,2Z"/>
+                                </svg>
+                            </div>
+                            <h4 class="text-lg font-semibold text-detective-blue">Bentuk Geometri</h4>
+                        </div>
+                        <p class="text-sm text-gray-600">Lingkaran, Segitiga, Persegi</p>
+                        <div class="items-dropped mt-4 space-y-2" id="shapes-dropped"></div>
+                    </div>
+                    
+                    <div class="drop-zone rounded-xl p-6 min-h-32 text-center" data-category="numbers">
+                        <div class="flex items-center justify-center mb-3">
+                            <div class="bg-detective-blue p-2 rounded-full mr-2">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M4,17V9H2V7H6V17H4M22,15C22,16.11 21.1,17 20,17H16V15H20V13H18V11H20V9H16V7H20A2,2 0 0,1 22,9V10.5A1.5,1.5 0 0,1 20.5,12A1.5,1.5 0 0,1 22,13.5V15M14,15V17H8V15L12,9H8V7H14V9L10,15H14Z"/>
+                                </svg>
+                            </div>
+                            <h4 class="text-lg font-semibold text-detective-blue">Angka & Matematika</h4>
+                        </div>
+                        <p class="text-sm text-gray-600">Angka, Rumus, Perhitungan</p>
+                        <div class="items-dropped mt-4 space-y-2" id="numbers-dropped"></div>
+                    </div>
+                    
+                    <div class="drop-zone rounded-xl p-6 min-h-32 text-center" data-category="colors">
+                        <div class="flex items-center justify-center mb-3">
+                            <div class="bg-detective-blue p-2 rounded-full mr-2">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M14.5,8A1.5,1.5 0 0,1 13,6.5A1.5,1.5 0 0,1 14.5,5A1.5,1.5 0 0,1 16,6.5A1.5,1.5 0 0,1 14.5,8M9.5,8A1.5,1.5 0 0,1 8,6.5A1.5,1.5 0 0,1 9.5,5A1.5,1.5 0 0,1 11,6.5A1.5,1.5 0 0,1 9.5,8M6.5,12A1.5,1.5 0 0,1 5,10.5A1.5,1.5 0 0,1 6.5,9A1.5,1.5 0 0,1 8,10.5A1.5,1.5 0 0,1 6.5,12M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A9,9 0 0,0 21,12A9,9 0 0,0 12,3Z"/>
+                                </svg>
+                            </div>
+                            <h4 class="text-lg font-semibold text-detective-blue">Pola Warna</h4>
+                        </div>
+                        <p class="text-sm text-gray-600">Merah, Biru, Hijau, Kuning</p>
+                        <div class="items-dropped mt-4 space-y-2" id="colors-dropped"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button id="check-classification" class="bg-mustard hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors magnify-hover">
+                        🔍 Periksa Klasifikasi
+                    </button>
+                    <button id="reset-game" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors ml-4">
+                        🔄 Reset
+                    </button>
+                </div>
+                
+                <div id="classification-result" class="mt-4 text-center font-semibold"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let score = 0;
+        let draggedItem = null;
+
+        // Game items with categories
+        const gameItems = [
+            { id: 1, text: '🔴', category: 'colors', name: 'Lingkaran Merah' },
+            { id: 2, text: '🔵', category: 'colors', name: 'Lingkaran Biru' },
+            { id: 3, text: '🟢', category: 'colors', name: 'Lingkaran Hijau' },
+            { id: 4, text: '🟡', category: 'colors', name: 'Lingkaran Kuning' },
+            { id: 5, text: '△', category: 'shapes', name: 'Segitiga' },
+            { id: 6, text: '□', category: 'shapes', name: 'Persegi' },
+            { id: 7, text: '○', category: 'shapes', name: 'Lingkaran' },
+            { id: 8, text: '◇', category: 'shapes', name: 'Belah Ketupat' },
+            { id: 9, text: '42', category: 'numbers', name: 'Angka 42' },
+            { id: 10, text: '7×8', category: 'numbers', name: 'Perkalian' },
+            { id: 11, text: '√16', category: 'numbers', name: 'Akar Kuadrat' },
+            { id: 12, text: '2³', category: 'numbers', name: 'Pangkat Tiga' }
+        ];
+
+        // Initialize the game
+        function initializeGame() {
+            const container = document.getElementById('items-container');
+            container.innerHTML = '';
+            
+            // Shuffle items
+            const shuffledItems = [...gameItems].sort(() => Math.random() - 0.5);
+            
+            shuffledItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'drag-item bg-white border-2 border-gray-300 rounded-lg p-4 text-center cursor-grab hover:border-mustard transition-colors detective-shadow';
+                itemElement.draggable = true;
+                itemElement.dataset.id = item.id;
+                itemElement.dataset.category = item.category;
+                itemElement.innerHTML = `
+                    <div class="text-2xl mb-2">${item.text}</div>
+                    <div class="text-xs text-gray-600">${item.name}</div>
+                `;
+                
+                // Add drag event listeners
+                itemElement.addEventListener('dragstart', handleDragStart);
+                itemElement.addEventListener('dragend', handleDragEnd);
+                
+                container.appendChild(itemElement);
+            });
+        }
+
+        // Drag and drop handlers
+        function handleDragStart(e) {
+            draggedItem = e.target;
+            e.target.style.opacity = '0.5';
+        }
+
+        function handleDragEnd(e) {
+            e.target.style.opacity = '1';
+            draggedItem = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            if (e.target.classList.contains('drop-zone')) {
+                e.target.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            if (e.target.classList.contains('drop-zone')) {
+                e.target.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropZone = e.target.closest('.drop-zone');
+            if (dropZone && draggedItem) {
+                dropZone.classList.remove('drag-over');
+                
+                // Move item to drop zone
+                const droppedContainer = dropZone.querySelector('.items-dropped');
+                const clonedItem = draggedItem.cloneNode(true);
+                clonedItem.className = 'bg-gray-100 border border-gray-300 rounded p-2 text-sm';
+                clonedItem.draggable = false;
+                
+                droppedContainer.appendChild(clonedItem);
+                draggedItem.remove();
+            }
+        }
+
+        // Add event listeners to drop zones
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('dragenter', handleDragEnter);
+            zone.addEventListener('dragleave', handleDragLeave);
+            zone.addEventListener('drop', handleDrop);
+        });
+
+        // Pattern challenge handlers
+        document.querySelectorAll('.pattern-answer').forEach(button => {
+            button.addEventListener('click', function() {
+                const answer = this.dataset.answer;
+                const resultDiv = document.getElementById('challenge1-result');
+                
+                if (answer === '32') {
+                    resultDiv.innerHTML = '✅ Benar! Pola: setiap angka dikali 2';
+                    resultDiv.className = 'mt-3 text-sm text-green-600';
+                    updateScore(10);
+                } else {
+                    resultDiv.innerHTML = '❌ Salah. Coba lagi! Hint: perhatikan perkalian';
+                    resultDiv.className = 'mt-3 text-sm text-red-600';
+                }
+                
+                // Disable all buttons
+                document.querySelectorAll('.pattern-answer').forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50');
+                });
+            });
+        });
+
+        document.querySelectorAll('.shape-answer').forEach(button => {
+            button.addEventListener('click', function() {
+                const answer = this.dataset.answer;
+                const resultDiv = document.getElementById('challenge2-result');
+                
+                if (answer === 'circle') {
+                    resultDiv.innerHTML = '✅ Benar! Pola: lingkaran dan persegi bergantian';
+                    resultDiv.className = 'mt-3 text-sm text-green-600';
+                    updateScore(10);
+                } else {
+                    resultDiv.innerHTML = '❌ Salah. Coba lagi! Hint: perhatikan urutan bentuk';
+                    resultDiv.className = 'mt-3 text-sm text-red-600';
+                }
+                
+                // Disable all buttons
+                document.querySelectorAll('.shape-answer').forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50');
+                });
+            });
+        });
+
+        // Classification checker
+        document.getElementById('check-classification').addEventListener('click', function() {
+            let correct = 0;
+            let total = 0;
+            
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                const category = zone.dataset.category;
+                const droppedItems = zone.querySelectorAll('.items-dropped > div');
+                
+                droppedItems.forEach(item => {
+                    total++;
+                    if (item.dataset.category === category) {
+                        correct++;
+                    }
+                });
+            });
+            
+            const resultDiv = document.getElementById('classification-result');
+            const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            if (percentage >= 80) {
+                resultDiv.innerHTML = `🎉 Luar biasa! ${correct}/${total} benar (${percentage}%)`;
+                resultDiv.className = 'mt-4 text-center font-semibold text-green-600';
+                updateScore(20);
+            } else if (percentage >= 60) {
+                resultDiv.innerHTML = `👍 Bagus! ${correct}/${total} benar (${percentage}%). Coba lagi untuk hasil sempurna!`;
+                resultDiv.className = 'mt-4 text-center font-semibold text-yellow-600';
+                updateScore(10);
+            } else {
+                resultDiv.innerHTML = `🤔 ${correct}/${total} benar (${percentage}%). Perhatikan pola dengan lebih teliti!`;
+                resultDiv.className = 'mt-4 text-center font-semibold text-red-600';
+            }
+        });
+
+        // Reset game
+        document.getElementById('reset-game').addEventListener('click', function() {
+            // Clear all dropped items
+            document.querySelectorAll('.items-dropped').forEach(container => {
+                container.innerHTML = '';
+            });
+            
+            // Clear result
+            document.getElementById('classification-result').innerHTML = '';
+            
+            // Reinitialize items
+            initializeGame();
+        });
+
+        // Update score
+        function updateScore(points) {
+            score += points;
+            document.getElementById('score').textContent = `Skor: ${score}`;
+        }
+
+        // Password system
+        const correctPassword = 'letmein';
+        let isUnlocked = false;
+
+        // Page navigation with password protection
+        document.getElementById('main-activity-btn').addEventListener('click', function() {
+            if (isUnlocked) {
+                document.getElementById('home-page').classList.add('hidden');
+                document.getElementById('main-activity-page').classList.remove('hidden');
+            } else {
+                document.getElementById('password-modal').classList.remove('hidden');
+                document.getElementById('password-modal').classList.add('flex');
+                document.getElementById('password-input').focus();
+            }
+        });
+
+        // Assessment button - opens Google Form in new tab
+        document.getElementById('assessment-btn').addEventListener('click', function() {
+            window.open('https://forms.google.com', '_blank', 'noopener,noreferrer');
+        });
+
+        // Password modal handlers
+        document.getElementById('password-submit').addEventListener('click', function() {
+            const enteredPassword = document.getElementById('password-input').value;
+            const errorDiv = document.getElementById('password-error');
+            
+            if (enteredPassword === correctPassword) {
+                isUnlocked = true;
+                document.getElementById('password-modal').classList.add('hidden');
+                document.getElementById('password-modal').classList.remove('flex');
+                document.getElementById('home-page').classList.add('hidden');
+                document.getElementById('main-activity-page').classList.remove('hidden');
+                
+                // Update button appearance
+                const btn = document.getElementById('main-activity-btn');
+                btn.innerHTML = `
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12,2A2,2 0 0,1 14,4C14,4.74 13.6,5.39 13,5.73V7H14A7,7 0 0,1 21,14H22A1,1 0 0,1 23,15V18A1,1 0 0,1 22,19H21V20A2,2 0 0,1 19,22H5A2,2 0 0,1 3,20V19H2A1,1 0 0,1 1,18V15A1,1 0 0,1 2,14H3A7,7 0 0,1 10,7H11V5.73C10.4,5.39 10,4.74 10,4A2,2 0 0,1 12,2M7.5,13A2.5,2.5 0 0,0 5,15.5A2.5,2.5 0 0,0 7.5,18A2.5,2.5 0 0,0 10,15.5A2.5,2.5 0 0,0 7.5,13M16.5,13A2.5,2.5 0 0,0 14,15.5A2.5,2.5 0 0,0 16.5,18A2.5,2.5 0 0,0 19,15.5A2.5,2.5 0 0,0 16.5,13Z"/>
+                    </svg>
+                    <span>Kegiatan Inti ✅</span>
+                `;
+                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                btn.classList.add('bg-green-500', 'hover:bg-green-600');
+                
+                // Clear password input
+                document.getElementById('password-input').value = '';
+                errorDiv.classList.add('hidden');
+            } else {
+                errorDiv.classList.remove('hidden');
+                document.getElementById('password-input').value = '';
+                document.getElementById('password-input').focus();
+            }
+        });
+
+        document.getElementById('password-cancel').addEventListener('click', function() {
+            document.getElementById('password-modal').classList.add('hidden');
+            document.getElementById('password-modal').classList.remove('flex');
+            document.getElementById('password-input').value = '';
+            document.getElementById('password-error').classList.add('hidden');
+        });
+
+        // Allow Enter key to submit password
+        document.getElementById('password-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('password-submit').click();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('password-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                document.getElementById('password-cancel').click();
+            }
+        });
+
+        document.getElementById('back-to-home').addEventListener('click', function() {
+            document.getElementById('main-activity-page').classList.add('hidden');
+            document.getElementById('home-page').classList.remove('hidden');
+        });
+
+        // Main Activity Page Functions
+        document.getElementById('save-classifications').addEventListener('click', function() {
+            const resultDiv = document.getElementById('save-result');
+            let filledClassifications = 0;
+            
+            // Check how many classifications are filled
+            for (let i = 1; i <= 3; i++) {
+                const name = document.getElementById(`classification${i}-name`).value.trim();
+                if (name) filledClassifications++;
+            }
+            
+            if (filledClassifications >= 3) {
+                resultDiv.innerHTML = '✅ Luar biasa! Tim telah berhasil membuat 3 sistem klasifikasi yang berbeda!';
+                resultDiv.className = 'mt-4 text-center font-semibold text-green-600';
+                updateScore(30);
+            } else if (filledClassifications >= 1) {
+                resultDiv.innerHTML = `👍 Bagus! ${filledClassifications} klasifikasi telah dibuat. Lengkapi hingga minimal 3 sistem klasifikasi.`;
+                resultDiv.className = 'mt-4 text-center font-semibold text-yellow-600';
+                updateScore(10 * filledClassifications);
+            } else {
+                resultDiv.innerHTML = '⚠️ Belum ada klasifikasi yang dibuat. Diskusikan dengan tim dan isi minimal 3 sistem klasifikasi!';
+                resultDiv.className = 'mt-4 text-center font-semibold text-red-600';
+            }
+        });
+
+
+
+        document.getElementById('clear-all').addEventListener('click', function() {
+            // Clear all input fields
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`classification${i}-name`).value = '';
+                for (let j = 1; j <= 3; j++) {
+                    document.getElementById(`group${i}-${j}`).value = '';
+                    document.getElementById(`items${i}-${j}`).value = '';
+                }
+            }
+            document.getElementById('save-result').innerHTML = '';
+        });
+
+        // Initialize the game when page loads
+        initializeGame();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99253cbd409699c5',t:'MTc2MTA5NjcwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
